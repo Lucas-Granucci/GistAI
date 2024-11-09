@@ -1,0 +1,38 @@
+# Ignore the node_modules folder in both root and any subdirectories
+node_modules/
+
+# Ignore Python virtual environment directory in the root
+.venv/
+
+# Ignore environment files
+*.env
+.env.*
+
+# Ignore Expo and React Native generated files and cache
+.expo/
+.expo-shared/
+android/
+ios/
+web-build/
+dist/
+build/
+
+# Ignore TypeScript build output
+*.tsbuildinfo
+
+# macOS and Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.log.*
+
+# Editor and IDE configuration files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
