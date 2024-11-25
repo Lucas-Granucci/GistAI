@@ -3,16 +3,18 @@ import time
 import sqlite3
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.edge.service import Service
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from newsapi import NewsApiClient
 
-def get_top_k_articles(k: int) -> dict:
 
+def get_top_k_articles(k: int) -> dict:
     articles = {}
 
     newsapi = NewsApiClient(os.environ["NEWSAPI_KEY"])
-    top_headlines = newsapi.get_top_headlines(language='en')
+    top_headlines = newsapi.get_top_headlines(language="en")
 
-    if top_headlines["status"] == 'ok':
+    if top_headlines["status"] == "ok":
         top_k_articles = top_headlines["articles"][:k]
 
         for article in top_k_articles:
@@ -20,40 +22,52 @@ def get_top_k_articles(k: int) -> dict:
 
     return articles
 
+
 def get_articles_from_db(titles: list):
     conn = sqlite3.connect("backend/database/news_articles.db")
     c = conn.cursor()
 
-    placeholders = ', '.join('?' for _ in titles)
+    placeholders = ", ".join("?" for _ in titles)
     query = f"SELECT title, author, publishedAt, url, urlToImage, content, extracted_content, summary FROM articles WHERE title IN ({placeholders})"
 
     c.execute(query, titles)
 
     articles_dict = {}
     for row in c.fetchall():
-        title, author, publishedAt, url, urlToImage, content, extracted_content, summary = row
+        (
+            title,
+            author,
+            publishedAt,
+            url,
+            urlToImage,
+            content,
+            extracted_content,
+            summary,
+        ) = row
         articles_dict[title] = {
-            'author': author,
-            'publishedAt': publishedAt,
-            'url': url,
-            'urlToImage': urlToImage,
-            'content': content,
-            'extracted_content': extracted_content,
-            'summary': summary
+            "author": author,
+            "publishedAt": publishedAt,
+            "url": url,
+            "urlToImage": urlToImage,
+            "content": content,
+            "extracted_content": extracted_content,
+            "summary": summary,
         }
     conn.close()
     return articles_dict
 
-def extract_article_content(article_content: dict) -> dict:
 
+def extract_article_content(article_content: dict) -> dict:
     current_url = article_content["url"]
 
-    options = webdriver.ChromeOptions()
+    options = webdriver.EdgeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(options=options)
+    service = Service(EdgeChromiumDriverManager().install())
+    driver = webdriver.Edge(service=service, options=options)
+
     max_redirects = 5
     attempts = 0
 

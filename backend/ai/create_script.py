@@ -1,8 +1,8 @@
 import os
 from groq import Groq
 
-def create_script(news_content: str) -> str:
 
+def create_script(news_content: str) -> str:
     prompt = f"""
     Create a natural-sounding news podcast script that covers today's top stories. Your script should:
 
@@ -32,22 +32,19 @@ def create_script(news_content: str) -> str:
 
     chat_completion = client.chat.completions.create(
         messages=[
-            {
-                "role": "system",
-                "content": "you are a helpful news assistant."
-            },
+            {"role": "system", "content": "you are a helpful news assistant."},
             {
                 "role": "user",
                 "content": prompt,
-            }
+            },
         ],
         model="llama3-70b-8192",
     )
 
     return chat_completion.choices[0].message.content
 
-def generate_deep_dive_script(news_content: str) -> str:
 
+def generate_deep_dive_script(news_content: str) -> str:
     prompt = f"""
     Do a deep dive into this article. Explore the entities involved (like people, countries, etc.). Also
     explore the real-world implications and how it will affect the world.
@@ -77,14 +74,11 @@ def generate_deep_dive_script(news_content: str) -> str:
 
     chat_completion = client.chat.completions.create(
         messages=[
-            {
-                "role": "system",
-                "content": "you are a helpful news assistant."
-            },
+            {"role": "system", "content": "you are a helpful news assistant."},
             {
                 "role": "user",
                 "content": prompt,
-            }
+            },
         ],
         model="llama3-70b-8192",
     )
